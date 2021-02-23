@@ -12,7 +12,11 @@ var Inferno = {
             let passDigitado = document.getElementById('userPass').value;
 
             me.montarToken(userDigitado, passDigitado, function (token) {
-                me.verificaValidToken(token, primeiraVezOuF5);
+                me.verificaValidToken(token, primeiraVezOuF5, function (success) {
+                    if (success) {
+
+                    }
+                });
             });
         // }
     },
@@ -89,14 +93,14 @@ var Inferno = {
                 dados = response.list;
     
                 encontradoUser = dados.find(user => user.userName === userDigitado);
-                senhaCorreta = dados.find(user => user.userPass === passDigitado)
+                senhaCorreta = dados.find(user => user.userPass === passDigitado);
                 
     
                 if (!senhaCorreta && !primeiraVezOuF5) {
-                    return alert('\r\rERROOOOOOOU \n\n \r\r\r\r\rSenha incorreta!!');
+                    return alert('\r\rERROOOOOOOU! \n Usuário ou senha incorretos!');
                 }
     debugger
-                return;
+                return cb(true);
             });
         });
 
