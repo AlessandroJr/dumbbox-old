@@ -1,0 +1,10 @@
+#logPag{
+    background: url('assets/images/');
+}
+
+#logPag input{
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}

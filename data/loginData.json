@@ -1,0 +1,6 @@
+{ 
+	"list": [
+		{ "userId": 1234, "userDisplayName": "Alessandro", "userName": "alessandro", "userPass": "kkk"},
+		{ "userId": 2345, "userDisplayName": "Guest", "userName": "guest", "userPass": "kkk"}
+	]
+}
