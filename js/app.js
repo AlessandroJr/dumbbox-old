@@ -1,24 +1,32 @@
 var Inferno = {
-    inicializiar: function() {
+    login: function() {
         var me = this;
-        // if (localStorage.Token) {
-        //     let primeiraVezOuF5 = true;
-        //     let token = localStorage.Token;
-        //     me.verificaValidToken(token, primeiraVezOuF5);
-        // } else {
+        if (me.getTokenLocalStorage()) {
+            let primeiraVezOuF5 = true;
+            let token = me.getTokenLocalStorage();
+            me.verificaValidToken(token, primeiraVezOuF5, function (success, msg) {
+                if (success) {
+                    me.inicializar();
+                } else {
+                    return msg;
+                }
+            });
+        } else {
             debugger
             let primeiraVezOuF5 = false;
             let userDigitado = document.getElementById('userName').value;
             let passDigitado = document.getElementById('userPass').value;
 
             me.montarToken(userDigitado, passDigitado, function (token) {
-                me.verificaValidToken(token, primeiraVezOuF5, function (success) {
+                me.verificaValidToken(token, primeiraVezOuF5, function (success, msg) {
                     if (success) {
-
+                        me.inicializar();
+                    } else {
+                        return msg;
                     }
                 });
             });
-        // }
+        }
     },
 
     Asc: function(String){
@@ -29,10 +37,17 @@ var Inferno = {
         return String.fromCharCode(AsciiNum)
     },
 
+    genGuid: function () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    },
+
     montarToken: function (userName, userPass, cb) {
         var mensx="",
             l, i, j=0, ch,
-            dados = userPass + '-/-/-' + userName;
+            dados = this.genGuid() + '-/-/-' + userPass + '-/-/-' + this.genGuid() + '-/-/-' + userName + '-/-/-' + this.genGuid();
 
         ch = "assbdFbdpdPdpfPdAAdpeoseslsQQEcDDldiVVkadiedkdkLLnm--;//$#";
         for (i=0;i<dados.length; i++){
@@ -46,6 +61,8 @@ var Inferno = {
             }
             mensx+=(this.Chr(l));
         }
+
+        this.setTokenLocalStorage(mensx);
 
         return cb(mensx);
     },
@@ -71,8 +88,8 @@ var Inferno = {
         }
 
         dados = mensx.split('-/-/-');
-        userName = dados[1];
-        userPass = dados[0];
+        userName = dados[3];
+        userPass = dados[1];
         
         return cb(userName, userPass);
     },
@@ -93,13 +110,20 @@ var Inferno = {
                 dados = response.list;
     
                 encontradoUser = dados.find(user => user.userName === userDigitado);
-                senhaCorreta = dados.find(user => user.userPass === passDigitado);
                 
-    
-                if (!senhaCorreta && !primeiraVezOuF5) {
-                    return alert('\r\rERROOOOOOOU! \n Usuário ou senha incorretos!');
+                if (!encontradoUser && primeiraVezOuF5) {
+                    localStorage.clear();
+                    return cb(false, alert('\r\rToken inválido! \n Faça login novamente.'));
                 }
-    debugger
+
+                senhaCorreta = (encontradoUser.userPass === passDigitado) ? true : false;
+                
+                if (!senhaCorreta && !primeiraVezOuF5) {
+                    return cb(false, alert('\r\rERROOOOOOOU! \n Usuário ou senha incorretos!'));
+                }
+
+                me.setUserConfig(encontradoUser);
+
                 return cb(true);
             });
         });
@@ -126,7 +150,41 @@ var Inferno = {
             }
             req.send(null);
         }
+    },
+
+    setTokenLocalStorage: function (token){
+        localStorage.DumbBoxToken = token;
+    },
+
+    getTokenLocalStorage: function (token){
+        return localStorage.DumbBoxToken;
+    },
+
+    // Ao validar o DumbBoxToken, o usuário encontrado é setado para que seja possível acessálo sempre em Inferno.UserConfig
+    UserConfig: {
+        Id: null,
+        Nome: null,
+        Username: null,
+        Email: null
+    },
+    setUserConfig: function (usuario) {
+        this.UserConfig.Id = usuario.Id;
+        this.UserConfig.Nome = usuario.userDisplayName;
+        this.UserConfig.Username = usuario.userName;
+        this.UserConfig.Email = usuario.email;
+    },
+    
+    inicializar: function () {
+        this.montaInfernoConfigs();
+        this.carregarSite(function (success) {
+
+        });
+    },
+
+    // configurações do sistema todo, depois colocar aqui permissões também
+    montaInfernoConfigs: function () {
+
     }
 };
 
-// Inferno.inicializiar();  
+// Inferno.login();  
