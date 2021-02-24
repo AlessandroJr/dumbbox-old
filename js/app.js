@@ -12,7 +12,6 @@ var Inferno = {
                 }
             });
         } else {
-            debugger
             let primeiraVezOuF5 = false;
             let userDigitado = document.getElementById('userName').value;
             let passDigitado = document.getElementById('userPass').value;
@@ -34,7 +33,7 @@ var Inferno = {
     },
     
     Chr: function(AsciiNum){
-        return String.fromCharCode(AsciiNum)
+        return String.fromCharCode(AsciiNum);
     },
 
     genGuid: function () {
@@ -116,6 +115,11 @@ var Inferno = {
                     return cb(false, alert('\r\rToken inválido! \n Faça login novamente.'));
                 }
 
+                if (!encontradoUser && !primeiraVezOuF5) {
+                    localStorage.clear();
+                    return cb(false, alert('\r\rUsuário não existe! \n Se você for novo por aqui, pode se cadastrar agora mesmo!'));
+                }
+
                 senhaCorreta = (encontradoUser.userPass === passDigitado) ? true : false;
                 
                 if (!senhaCorreta && !primeiraVezOuF5) {
@@ -184,7 +188,10 @@ var Inferno = {
     // configurações do sistema todo, depois colocar aqui permissões também
     montaInfernoConfigs: function () {
 
+    },
+
+    carregarSite: function (cb) {
+
+        return cb();
     }
 };
-
-// Inferno.login();  
