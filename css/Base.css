@@ -1,5 +1,20 @@
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+  }
+
 #logPag{
     background: url('assets/images/');
+    background-color: rgb(41, 41, 41);
 }
 
 #logPag input{

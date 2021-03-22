@@ -1,4 +1,7 @@
 var Inferno = {
+
+    rendered: '',
+
     login: function() {
         var me = this;
         if (me.getTokenLocalStorage()) {
@@ -115,7 +118,7 @@ var Inferno = {
                     return cb(false, alert('\r\rToken inválido! \n Faça login novamente.'));
                 }
 
-                if (!encontradoUser && !primeiraVezOuF5) {
+                if (!encontradoUser) {
                     localStorage.clear();
                     return cb(false, alert('\r\rUsuário não existe! \n Se você for novo por aqui, pode se cadastrar agora mesmo!'));
                 }
@@ -123,6 +126,7 @@ var Inferno = {
                 senhaCorreta = (encontradoUser.userPass === passDigitado) ? true : false;
                 
                 if (!senhaCorreta && !primeiraVezOuF5) {
+                    localStorage.clear();
                     return cb(false, alert('\r\rERROOOOOOOU! \n Usuário ou senha incorretos!'));
                 }
 
@@ -180,9 +184,20 @@ var Inferno = {
     
     inicializar: function () {
         this.montaInfernoConfigs();
-        this.carregarSite(function (success) {
-
+        this.loadScreen(true);
+        this.carregarDumbbox(function (success) {
+            document.getElementById('logPag').innerHTML = Inferno.rendered;
         });
+    },
+
+    loadScreen: function () {
+        if (arguments[0]) {
+            document.getElementById('logPag').innerHTML = `
+            <div class="container init-loader" style="color: #fff;font-size: 70px">
+                <i class="fa fa-loader fa-spin"></i>
+            <div>
+            `;
+        }
     },
 
     // configurações do sistema todo, depois colocar aqui permissões também
@@ -190,8 +205,43 @@ var Inferno = {
 
     },
 
-    carregarSite: function (cb) {
+    carregarDumbbox: function (cb) {
+        let cmp = [
+            'menusidebar'
+        ];
 
-        return cb();
+        this.loadCmp(cmp);
+
+        return cb(true);
+    },
+
+    loadCmp: function (cmp, ext, dataType) {
+        var me = this,
+            extension = ext ? ext : 'html',
+            dataType = dataType ? dataType : 'html';
+
+        if (Array.isArray(cmp)){
+            cmp.forEach(cmp => {
+                me.requireCmp( function (response) {
+                    me.rendered = me.rendered + response;
+                }, 'cmp/'+ cmp + '.' + extension, dataType);
+            });
+        } else {
+            me.requireCmp( function (response) {
+                me.rendered = me.rendered + response;
+            }, 'cmp/'+ cmp + '.' + extension, dataType);
+        }
+    },
+
+    requireCmp: function (_cb, script, dataType) {
+        $.ajax({
+            url: script,
+            dataType: dataType,
+            async: false,           // <-- This is the key
+            success: _cb,
+            error: function () {
+                throw new Error("Erro ao carregar script: " + script);
+            }
+        });
     }
 };

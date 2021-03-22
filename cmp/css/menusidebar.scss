@@ -1,0 +1,64 @@
+.sidebar {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 50px;
+    height: 100%;
+    width: 60px;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    text-align: center;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    &:hover, &.active, &.hovered {
+      width: 250px;
+      -webkit-transition: all .2s ease-in-out;
+      transition: all .2s ease-in-out;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      li {
+        display: block;
+        a {
+          display: block;
+          position: relative;
+          white-space: nowrap;
+          overflow: hidden;
+          border-bottom: 1px solid #ddd;
+          color: #444;
+          text-align: left;
+          i {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            -webkit-animation-duration: .7s;
+            -moz-animation-duration: .7s;
+            -o-animation-duration: .7s;
+            animation-duration: .7s;
+            -webkit-animation-fill-mode: both;
+            -moz-animation-fill-mode: both;
+            -o-animation-fill-mode: both;
+            animation-fill-mode: both;
+          }
+          span {
+            display: inline-block;
+            height: 60px;
+            line-height: 60px;
+          }
+          &:hover {
+            background-color: #eee;
+            i {
+              -webkit-animation-name: swing;
+              -moz-animation-name: swing;
+              -o-animation-name: swing;
+              animation-name: swing;
+            }
+          }
+        }
+      }
+    }
+  }
